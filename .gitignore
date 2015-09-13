@@ -1,3 +1,6 @@
+#virtualenv repertoire
+venv/
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
