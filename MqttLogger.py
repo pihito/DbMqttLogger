@@ -146,7 +146,7 @@ class DbStore :
 #    def get_country(db):
 #        return db.countries.find_one()
 
-@begin.start(auto_convert=True)
+@begin.start
 @begin.convert(mqttPort=int)
 def run(subChannel : "mon des channel à souscrire separer par un | ex : (SebHome/HugoRoom|SebHome/FloRoom)",
         mqttServer : "adresse du server MQTT" ="192.168.1.30", 
