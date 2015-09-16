@@ -8,6 +8,7 @@ from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure,InvalidName
 import json
 import datetime
+import begin
 
 logging.config.fileConfig('logging.conf')
 
@@ -145,18 +146,28 @@ class DbStore :
 #    def get_country(db):
 #        return db.countries.find_one()
 
-if __name__ == '__main__' :    
+@begin.start(auto_convert=True)
+@begin.convert(mqttPort=int)
+def run(subChannel : "mon des channel à souscrire separer par un | ex : (SebHome/HugoRoom|SebHome/FloRoom)",
+        mqttServer : "adresse du server MQTT" ="192.168.1.30", 
+        mqttPort : "port du server MQTT" ="1883", 
+        dbServer :"adresse du serveur mongoDB" ="192.168.1.30:27017"):
     
     logger = logging.getLogger('root')
     logger.info("***starting to store MQTT msg to database")
     
-    db = DbStore('192.168.1.30:27017')
+    db = DbStore(dbServer)
     
     logger.info("***connecting to mqtt and subscribe")
-    mqttClient = MqttClient("192.168.1.30", 1883,db)
-    mqttClient.subscribe("SebHome/HugoRoom")
-    
+    mqttClient = MqttClient(mqttServer, int(mqttPort),db)
+    #mqttClient.subscribe("SebHome/HugoRoom")
+    mqttClient.subscribe(subChannel)
     logger.info("***Log message")
     mqttClient.mainLoop()
+    
+    
+#if __name__ == '__main__' :    
+#    pass
+    
     
 
